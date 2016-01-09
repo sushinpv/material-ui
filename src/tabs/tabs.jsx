@@ -150,6 +150,11 @@ const Tabs = React.createClass({
     };
   },
 
+  componentDidMount() {
+    Events.on(window, 'resize', this.handleWindowWidthChange);
+    this.replaceState(this.getNewState());
+  },
+
   componentWillReceiveProps(newProps, nextContext) {
     const valueLink = this.getValueLink(newProps);
     const newMuiTheme = nextContext.muiTheme ? nextContext.muiTheme : this.state.muiTheme;
@@ -159,11 +164,6 @@ const Tabs = React.createClass({
     }
 
     this.setState({muiTheme: newMuiTheme});
-  },
-
-  componentDidMount() {
-    Events.on(window, 'resize', this.handleWindowWidthChange);
-    this.replaceState(this.getNewState());
   },
 
   componentDidUpdate() {

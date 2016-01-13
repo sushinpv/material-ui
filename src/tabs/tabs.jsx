@@ -118,7 +118,7 @@ const Tabs = React.createClass({
   getDefaultProps() {
     return {
       initialSelectedIndex: 0,
-      stretchTabContainer: false,
+      stretchTabContainer: true,
     };
   },
 
@@ -151,8 +151,8 @@ const Tabs = React.createClass({
   },
 
   componentDidMount() {
+    window.requestAnimationFrame(this.handleWindowWidthChange);
     Events.on(window, 'resize', this.handleWindowWidthChange);
-    this.replaceState(this.getNewState());
   },
 
   componentWillReceiveProps(newProps, nextContext) {
@@ -326,21 +326,24 @@ const Tabs = React.createClass({
     let paginationChange = this.state.shouldPaginate !== nextShouldPaginate;
     if (paginationChange || tabContainerWidth !== this.state.tabContainerWidth || tabWrapperWidthChange) {
       let nextSelectedTab = tabInfo[this.state.selectedIndex];
-      let tabScrollWrapper = this._getDOMNode(Constants.TAB_SCROLL_WRAPPER_REF_NAME);
-      let tabScrollWrapperLeftScroll = tabScrollWrapper.scrollLeft;
-      let tabScrollWrapperWidth = tabScrollWrapper.offsetWidth;
-      let tabPaginationButtonMargin = nextShouldPaginate ? Constants.TAB_PAGINATOR_BUTTON_DEFAULT_WIDTH : 0;
-      let tabVisible = nextSelectedTab.leftOffset - tabPaginationButtonMargin >= tabScrollWrapperLeftScroll
-        && tabScrollWrapperLeftScroll + tabScrollWrapperWidth - nextSelectedTab.rightOffset
-        - tabPaginationButtonMargin >= 0;
-      if (!tabVisible) {
-        let shouldScrollRight = tabScrollWrapperLeftScroll + tabScrollWrapperWidth
-          - nextSelectedTab.rightOffset - tabPaginationButtonMargin < 0;
-        // calculate how much to set tag scroll wrapper's scrollLeft to
-        if (shouldScrollRight) {
-          tabScrollWrapper.scrollLeft = nextSelectedTab.rightOffset + tabPaginationButtonMargin - tabScrollWrapperWidth;
-        } else {
-          tabScrollWrapper.scrollLeft = nextSelectedTab.leftOffset - tabPaginationButtonMargin;
+      if (nextSelectedTab !== undefined) {
+        let tabScrollWrapper = this._getDOMNode(Constants.TAB_SCROLL_WRAPPER_REF_NAME);
+        let tabScrollWrapperLeftScroll = tabScrollWrapper.scrollLeft;
+        let tabScrollWrapperWidth = tabScrollWrapper.offsetWidth;
+        let tabPaginationButtonMargin = nextShouldPaginate ? Constants.TAB_PAGINATOR_BUTTON_DEFAULT_WIDTH : 0;
+        let tabVisible = nextSelectedTab.leftOffset - tabPaginationButtonMargin >= tabScrollWrapperLeftScroll
+          && tabScrollWrapperLeftScroll + tabScrollWrapperWidth - nextSelectedTab.rightOffset
+          - tabPaginationButtonMargin >= 0;
+        if (!tabVisible) {
+          let shouldScrollRight = tabScrollWrapperLeftScroll + tabScrollWrapperWidth
+            - nextSelectedTab.rightOffset - tabPaginationButtonMargin < 0;
+          // calculate how much to set tag scroll wrapper's scrollLeft to
+          if (shouldScrollRight) {
+            tabScrollWrapper.scrollLeft = nextSelectedTab.rightOffset + tabPaginationButtonMargin
+              - tabScrollWrapperWidth;
+          } else {
+            tabScrollWrapper.scrollLeft = nextSelectedTab.leftOffset - tabPaginationButtonMargin;
+          }
         }
       }
     }
@@ -365,7 +368,8 @@ const Tabs = React.createClass({
 
 
     // stretch tabs if stretchTabContainer is true and if device screen size is large
-    let shouldStretch = stretchTabContainer && this.isDeviceSize(StyleResizable.statics.Sizes.LARGE);
+    let shouldStretch = stretchTabContainer && this.isDeviceSize(StyleResizable.statics.Sizes.LARGE)
+      && !this.state.shouldPaginate;
 
     let themeVariables = this.state.muiTheme.tabs;
     let styles = {

@@ -9,6 +9,8 @@ import tabsExampleControlledCode from '!raw!./ExampleControlled';
 import TabsExampleControlled from './ExampleControlled';
 import tabsExampleSwipeableCode from '!raw!./ExampleSwipeable';
 import TabsExampleSwipeable from './ExampleSwipeable';
+import tabsExampleScrollableCode from '!raw!./ExampleScrollable';
+import TabsExampleScrollable from './ExampleScrollable';
 import tabsCode from '!raw!material-ui/lib/tabs/tabs';
 import tabsText from './Tabs';
 import tabCode from '!raw!material-ui/lib/tabs/tab';
@@ -25,6 +27,9 @@ const TabsPage = () => (
     </CodeExample>
     <CodeExample code={tabsExampleSwipeableCode}>
       <TabsExampleSwipeable />
+    </CodeExample>
+    <CodeExample code={tabsExampleScrollableCode}>
+      <TabsExampleScrollable />
     </CodeExample>
     <PropTypeDescription
       code={tabsCode}

@@ -69,6 +69,12 @@ const AutoComplete = React.createClass({
     listStyle: React.PropTypes.object,
 
     /**
+     * The max number of search result to be shown.
+     * By default it shows all the items which matches filter
+     */
+    maxSearchResult: React.PropTypes.number,
+
+    /**
      * Delay for closing time of the menu.
      */
     menuCloseDelay: React.PropTypes.number,
@@ -316,8 +322,9 @@ const AutoComplete = React.createClass({
     let mergedMenuStyles = this.mergeStyles(styles.menu, menuStyle);
 
     let requestsList = [];
+    const maxSearchResult = this.props.maxSearchResult;
 
-    this.props.dataSource.map((item) => {
+    for (let item of this.props.dataSource) {
       //showAllItems is deprecated, will be removed in the future
       if (this.props.showAllItems) {
         requestsList.push(item);
@@ -338,7 +345,10 @@ const AutoComplete = React.createClass({
           }
           break;
       }
-    });
+      if (maxSearchResult && maxSearchResult > 0 && requestsList.length === maxSearchResult) {
+        break;
+      }
+    }
 
     this.requestsList = requestsList;
 
@@ -423,7 +433,7 @@ const AutoComplete = React.createClass({
               }
               this.focusOnInput = true;
             }}
-
+            autoComplete="off"
             {...textFieldProps} />
         </div>
         <Popover

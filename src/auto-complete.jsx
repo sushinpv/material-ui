@@ -69,10 +69,10 @@ const AutoComplete = React.createClass({
     listStyle: React.PropTypes.object,
 
     /**
-     * The max number of search result to be shown.
+     * The max number of search results to be shown.
      * By default it shows all the items which matches filter
      */
-    maxSearchResult: React.PropTypes.number,
+    maxSearchResults: React.PropTypes.number,
 
     /**
      * Delay for closing time of the menu.
@@ -322,7 +322,7 @@ const AutoComplete = React.createClass({
     let mergedMenuStyles = this.mergeStyles(styles.menu, menuStyle);
 
     let requestsList = [];
-    const maxSearchResult = this.props.maxSearchResult;
+    const maxSearchResults = this.props.maxSearchResults;
 
     for (let item of this.props.dataSource) {
       //showAllItems is deprecated, will be removed in the future
@@ -345,7 +345,7 @@ const AutoComplete = React.createClass({
           }
           break;
       }
-      if (maxSearchResult && maxSearchResult > 0 && requestsList.length === maxSearchResult) {
+      if (maxSearchResults && maxSearchResults > 0 && requestsList.length === maxSearchResults) {
         break;
       }
     }

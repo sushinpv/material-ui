@@ -324,7 +324,7 @@ const AutoComplete = React.createClass({
     let requestsList = [];
     const maxSearchResults = this.props.maxSearchResults;
 
-    for (let item of this.props.dataSource) {
+    this.props.dataSource.every((item) => {
       //showAllItems is deprecated, will be removed in the future
       if (this.props.showAllItems) {
         requestsList.push(item);
@@ -345,10 +345,8 @@ const AutoComplete = React.createClass({
           }
           break;
       }
-      if (maxSearchResults && maxSearchResults > 0 && requestsList.length === maxSearchResults) {
-        break;
-      }
-    }
+      return !(maxSearchResults && maxSearchResults > 0 && requestsList.length === maxSearchResults);
+    });
 
     this.requestsList = requestsList;
 
